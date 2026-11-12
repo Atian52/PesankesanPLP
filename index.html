@@ -1,0 +1,1641 @@
+<!DOCTYPE html>  <html lang="id" class="dark">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Perpisahan PLP - Teknik & Bisnis Sepeda Motor (TBSM)</title>  
+    <!-- Tailwind CSS CDN -->  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <!-- Google Fonts: Russo One (Racing/Automotive) & Inter + Caveat (Polaroid Handwriting) -->  
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet">  
+    <!-- Font Awesome Icons -->  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">  
+    <!-- Supabase JS SDK v2 -->  
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script>  
+    if (typeof tailwind !== 'undefined') {  
+        tailwind.config = {  
+            darkMode: 'class',  
+            theme: {  
+                extend: {  
+                    fontFamily: {  
+                        racing: ['"Russo One"', 'sans-serif'],  
+                        sans: ['Inter', 'sans-serif'],  
+                        hand: ['Caveat', 'cursive'],  
+                    },  
+                    colors: {  
+                        garage: {  
+                            950: '#090a0f',  
+                            900: '#12151f',  
+                            800: '#1e2230',  
+                            700: '#2d3348',  
+                        },  
+                        racing: {  
+                            red: '#ef4444',  
+                            amber: '#f59e0b',  
+                            neon: '#22c55e'  
+                        }  
+                    }  
+                }  
+            }  
+        };  
+    }  
+</script>  
+
+<style>  
+    *, *::before, *::after {  
+        box-sizing: border-box;  
+    }  
+    button, a, input, textarea, select, [role="button"] {  
+        -webkit-tap-highlight-color: transparent;  
+    }  
+    html, body {  
+        margin: 0;  
+        padding: 0;  
+        font-family: 'Inter', sans-serif;  
+        background-color: #090a0f;  
+        color: #f8fafc;  
+        overflow-x: hidden;  
+        min-height: 100vh;  
+    }  
+    .font-racing {  
+        font-family: 'Russo One', sans-serif;  
+    }  
+    .font-hand {  
+        font-family: 'Caveat', cursive;  
+    }  
+
+    .hidden {  
+        display: none !important;  
+    }  
+
+    /* Carbon Fiber Background Pattern */  
+    body {  
+        background-image:   
+            radial-gradient(circle at 50% 10%, rgba(239, 68, 68, 0.14), transparent 45%),  
+            radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.12), transparent 45%),  
+            linear-gradient(27deg, #0d0f17 5px, transparent 5px),  
+            linear-gradient(207deg, #0d0f17 5px, transparent 5px),  
+            linear-gradient(27deg, #151824 5px, transparent 5px),  
+            linear-gradient(207deg, #151824 5px, transparent 5px),  
+            linear-gradient(90deg, #0b0d13 10px, transparent 10px),  
+            linear-gradient(#0f121b 25%, #090b10 25%, #090b10 50%, transparent 50%, transparent 75%, #131621 75%, #131621);  
+        background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px;  
+        background-position: 0 0, 0 0, 0 5px, 10px 0, 0 10px, 10px 5px, 0 0, 0 0;  
+    }  
+
+    #view-prank {  
+        position: fixed;  
+        top: 0;  
+        right: 0;  
+        bottom: 0;  
+        left: 0;  
+        z-index: 50;  
+        display: flex;  
+        flex-direction: column;  
+        justify-content: space-between;  
+        align-items: center;  
+        padding: 16px;  
+        background: rgba(9, 10, 15, 0.96);  
+        overflow: hidden;  
+    }  
+
+    #prank-arena {  
+        position: relative;  
+        width: 100%;  
+        max-width: 768px;  
+        flex: 1 1 auto;  
+        margin: 16px 0;  
+        min-height: 320px;  
+    }  
+
+    #prank-btn-wrapper {  
+        position: absolute;  
+        left: 50%;  
+        z-index: 30;  
+        display: flex;  
+        flex-direction: column;  
+        align-items: center;  
+        transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);  
+        width: max-content;  
+        max-width: 92vw;  
+    }  
+    .prank-pos-top {  
+        top: 16px !important;  
+        bottom: auto !important;  
+        transform: translateX(-50%) !important;  
+    }  
+    .prank-pos-bottom {  
+        top: auto !important;  
+        bottom: 16px !important;  
+        transform: translateX(-50%) !important;  
+    }  
+    .prank-pos-center {  
+        top: 50% !important;  
+        bottom: auto !important;  
+        transform: translate(-50%, -50%) !important;  
+    }  
+
+    #prank-btn {  
+        display: inline-flex;  
+        align-items: center;  
+        gap: 12px;  
+        padding: 16px 28px;  
+        border-radius: 16px;  
+        font-family: 'Russo One', sans-serif;  
+        font-size: 18px;  
+        text-transform: uppercase;  
+        letter-spacing: 1px;  
+        color: #ffffff;  
+        background: linear-gradient(90deg, #dc2626, #ef4444, #f59e0b);  
+        border: 2px solid rgba(255, 255, 255, 0.35);  
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);  
+        cursor: pointer;  
+    }  
+    #prank-btn:active {  
+        transform: scale(0.95);  
+    }  
+
+    #prank-tooltip {  
+        margin-bottom: 8px;  
+        padding: 6px 14px;  
+        border-radius: 8px;  
+        background-color: #f59e0b;  
+        color: #090a0f;  
+        font-weight: 700;  
+        font-size: 13px;  
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);  
+        text-align: center;  
+    }  
+
+    .checkered-strip {  
+        height: 12px;  
+        width: 100%;  
+        background-image:   
+            linear-gradient(45deg, #000 25%, transparent 25%),   
+            linear-gradient(-45deg, #000 25%, transparent 25%),   
+            linear-gradient(45deg, transparent 75%, #000 75%),   
+            linear-gradient(-45deg, transparent 75%, #000 75%);  
+        background-size: 20px 20px;  
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0;  
+        background-color: #ffffff;  
+    }  
+
+    .hazard-strip {  
+        height: 10px;  
+        width: 100%;  
+        background: repeating-linear-gradient(  
+            -45deg,  
+            #f59e0b,  
+            #f59e0b 12px,  
+            #111827 12px,  
+            #111827 24px  
+        );  
+    }  
+
+    .glass-panel {  
+        background: rgba(24, 28, 42, 0.85);  
+        backdrop-filter: blur(16px);  
+        -webkit-backdrop-filter: blur(16px);  
+        border: 1px solid rgba(255, 255, 255, 0.14);  
+        box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);  
+        border-radius: 24px;  
+    }  
+
+    .polaroid-card {  
+        background: #f8fafc;  
+        color: #1e293b;  
+        padding: 12px 12px 26px 12px;  
+        border-radius: 12px;  
+        box-shadow: 0 15px 30px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.2);  
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);  
+        position: relative;  
+    }  
+    .polaroid-card:nth-child(odd) {  
+        transform: rotate(-1.8deg);  
+    }  
+    .polaroid-card:nth-child(even) {  
+        transform: rotate(1.8deg);  
+    }  
+    .polaroid-card:hover {  
+        transform: rotate(0deg) scale(1.03) translateY(-5px);  
+        z-index: 20;  
+        box-shadow: 0 22px 40px rgba(239, 68, 68, 0.35);  
+    }  
+
+    .polaroid-tape {  
+        position: absolute;  
+        top: -12px;  
+        left: 50%;  
+        transform: translateX(-50%) rotate(-2deg);  
+        width: 90px;  
+        height: 26px;  
+        background: rgba(245, 158, 11, 0.55);  
+        border-left: 2px dashed rgba(0,0,0,0.25);  
+        border-right: 2px dashed rgba(0,0,0,0.25);  
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);  
+        z-index: 5;  
+    }  
+
+    @keyframes spin-slow {  
+        from { transform: rotate(0deg); }  
+        to { transform: rotate(360deg); }  
+    }  
+    .gear-spin {  
+        animation: spin-slow 14s linear infinite;  
+    }  
+
+    @keyframes hihuh-pop {  
+        0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }  
+        50% { transform: scale(1.15) rotate(5deg); opacity: 1; }  
+        75% { transform: scale(0.95) rotate(-3deg); opacity: 1; }  
+        100% { transform: scale(1) rotate(0deg); opacity: 1; }  
+    }  
+    .animate-hihuh {  
+        animation: hihuh-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;  
+    }  
+
+    @keyframes shake-error {  
+        0%, 100% { transform: translateX(0); }  
+        20%, 60% { transform: translateX(-8px); }  
+        40%, 80% { transform: translateX(8px); }  
+    }  
+    .animate-shake {  
+        animation: shake-error 0.4s ease-in-out;  
+    }  
+
+    .fallback-container {  
+        max-width: 1200px;  
+        margin: 0 auto;  
+        padding: 20px 16px;  
+        width: 100%;  
+    }  
+    .fallback-grid-2 {  
+        display: grid;  
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));  
+        gap: 20px;  
+    }  
+    .fallback-grid-3 {  
+        display: grid;  
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));  
+        gap: 24px;  
+    }  
+    .btn-racing-primary {  
+        background: linear-gradient(90deg, #dc2626, #f59e0b);  
+        color: #ffffff;  
+        border: none;  
+        padding: 12px 22px;  
+        border-radius: 12px;  
+        font-family: 'Russo One', sans-serif;  
+        text-transform: uppercase;  
+        cursor: pointer;  
+        display: inline-flex;  
+        align-items: center;  
+        justify-content: center;  
+        gap: 8px;  
+    }  
+    .btn-dark-secondary {  
+        background: #1e293b;  
+        color: #f8fafc;  
+        border: 1px solid #475569;  
+        padding: 10px 18px;  
+        border-radius: 12px;  
+        font-weight: 600;  
+        cursor: pointer;  
+        display: inline-flex;  
+        align-items: center;  
+        gap: 8px;  
+    }  
+    .input-garage {  
+        width: 100%;  
+        padding: 12px 16px;  
+        border-radius: 12px;  
+        background: #0f131d;  
+        border: 1px solid #334155;  
+        color: #ffffff;  
+        font-size: 14px;  
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;  
+    }  
+    .class-select-wrap {  
+        position: relative;  
+    }  
+    .class-select-trigger {  
+        display: flex;  
+        align-items: center;  
+        justify-content: space-between;  
+        text-align: left;  
+        cursor: pointer;  
+    }  
+    .class-select-trigger:focus-visible {  
+        outline: none;  
+        border-color: #ef4444;  
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);  
+    }  
+    .class-select-arrow {  
+        color: #fbbf24;  
+        transition: transform 0.25s ease;  
+    }  
+    .class-select-wrap.is-open .class-select-arrow {  
+        transform: rotate(180deg);  
+    }  
+    .class-select-menu {  
+        position: absolute;  
+        top: calc(100% + 6px);  
+        right: 0;  
+        left: 0;  
+        z-index: 30;  
+        padding: 5px;  
+        border: 1px solid #475569;  
+        border-radius: 12px;  
+        background: #151a24;  
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);  
+        opacity: 0;  
+        transform: translateY(-6px) scale(0.98);  
+        transform-origin: top;  
+        transition: opacity 0.18s ease, transform 0.18s ease;  
+    }  
+    .class-select-menu[hidden] {  
+        display: none;  
+    }  
+    .class-select-wrap.is-open .class-select-menu {  
+        opacity: 1;  
+        transform: translateY(0) scale(1);  
+    }  
+    .class-select-menu[hidden] {  
+        display: none;  
+    }  
+    .class-select-menu button {  
+        display: block;  
+        width: 100%;  
+        padding: 9px 12px;  
+        border: 0;  
+        border-radius: 7px;  
+        background: transparent;  
+        color: #f8fafc;  
+        font: inherit;  
+        text-align: left;  
+        cursor: pointer;  
+        transition: background-color 0.15s ease, color 0.15s ease;  
+    }  
+    .class-select-menu button:hover,  
+    .class-select-menu button:focus-visible,  
+    .class-select-menu button[aria-selected="true"] {  
+        outline: none;  
+        background: rgba(239, 68, 68, 0.2);  
+        color: #fbbf24;  
+    }  
+    @media (prefers-reduced-motion: reduce) {  
+        .class-select-menu, .class-select-menu button, .class-select-arrow { transition: none; }  
+    }  
+    .modal-backdrop {  
+        position: fixed;  
+        top: 0;  
+        right: 0;  
+        bottom: 0;  
+        left: 0;  
+        z-index: 60;  
+        background: rgba(0, 0, 0, 0.85);  
+        display: flex;  
+        align-items: center;  
+        justify-content: center;  
+        padding: 16px;  
+    }  
+</style>
+
+</head>  
+<body class="min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">  <!-- VIEW 1: TOMBOL GOCEKAN -->  
+<div id="view-prank" class="fixed inset-0 z-50 flex flex-col justify-between items-center p-4 sm:p-8 overflow-hidden bg-garage-950/95 backdrop-blur-xl">  
+      
+    <div class="w-full max-w-4xl text-center z-10 mt-2" style="width: 100%; max-width: 880px; text-align: center; z-index: 10;">  
+        <div class="h-3 w-full checkered-strip rounded-t-xl mb-4 opacity-90" style="border-radius: 10px 10px 0 0; margin-bottom: 14px;"></div>  
+          
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/15 border border-red-500/40 text-red-400 text-xs sm:text-sm font-semibold tracking-wider uppercase mb-3" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 999px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #f87171; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">  
+            <i class="fa-solid fa-motorcycle animate-bounce"></i>  
+            <span>Pit-Stop Kenangan PLP Otomotif</span>  
+            <i class="fa-solid fa-wrench"></i>  
+        </div>  
+
+        <h1 class="font-racing text-2xl sm:text-4xl md:text-5xl tracking-wide text-white uppercase drop-shadow-[0_4px_20px_rgba(239,68,68,0.5)]" style="margin: 6px 0; font-size: clamp(24px, 5vw, 44px); text-transform: uppercase;">  
+            PERPISAHAN PLP <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-red-500" style="color: #f59e0b;">TBSM</span>  
+        </h1>  
+        <p class="text-slate-400 text-xs sm:text-base mt-2 max-w-xl mx-auto" style="color: #94a3b8; font-size: 14px; max-width: 560px; margin: 8px auto;">  
+            Teknik & Bisnis Sepeda Motor — Sebelum masuk ke pilihan kelas, <span class="text-amber-400 font-semibold" style="color: #fbbf24; font-weight: 600;">klik tombol starter</span> di bawah ini dulu!  
+        </p>  
+
+    </div>  
+
+    <i class="fa-solid fa-gear text-slate-800/35 text-[180px] sm:text-[260px] fixed -left-16 top-1/3 gear-spin pointer-events-none" style="position: fixed; left: -60px; top: 35%; font-size: 180px; color: rgba(30,41,59,0.3); pointer-events: none;"></i>  
+    <i class="fa-solid fa-dharmachakra text-slate-800/35 text-[200px] sm:text-[280px] fixed -right-16 bottom-1/4 gear-spin pointer-events-none" style="position: fixed; right: -60px; bottom: 25%; font-size: 180px; color: rgba(30,41,59,0.3); pointer-events: none;"></i>  
+
+    <div id="prank-arena" class="relative w-full max-w-3xl flex-1 my-4 flex justify-center">  
+          
+        <div id="prank-btn-wrapper" class="prank-pos-top absolute top-4 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">  
+              
+            <div id="prank-tooltip" class="mb-2 px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs sm:text-sm shadow-lg whitespace-nowrap animate-bounce">  
+                👇 Starter Mesinnya Disini Bosku!  
+            </div>  
+
+            <button id="prank-btn" onclick="handlePrankClick()" class="group relative inline-flex items-center gap-3 px-7 py-4 sm:px-9 sm:py-5 rounded-2xl font-racing text-base sm:text-xl tracking-wider uppercase text-white bg-gradient-to-r from-red-600 via-red-500 to-amber-500 hover:from-red-500 hover:to-amber-400 shadow-[0_0_30px_rgba(239,68,68,0.6)] border-2 border-white/30 active:scale-95 transition-all cursor-pointer">  
+                <span class="w-9 h-9 rounded-xl bg-black/30 flex items-center justify-center border border-white/20" style="width: 34px; height: 34px; border-radius: 10px; background: rgba(0,0,0,0.3); display: inline-flex; align-items: center; justify-content: center;">  
+                    <i id="prank-btn-icon" class="fa-solid fa-key text-amber-300 group-hover:rotate-45 transition-transform" style="color: #fcd34d;"></i>  
+                </span>  
+                <span id="prank-btn-text">Coba Klik Disini</span>  
+                <i class="fa-solid fa-bolt text-amber-200 animate-pulse" style="color: #fde68a;"></i>  
+            </button>  
+        </div>  
+
+        <div id="hihuh-popup" class="hidden absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none">  
+            <div class="animate-hihuh bg-gradient-to-br from-amber-400 via-red-500 to-red-700 p-1.5 rounded-3xl shadow-[0_0_80px_rgba(245,158,11,0.9)] border-4 border-white" style="background: linear-gradient(135deg, #fbbf24, #ef4444, #b91c1c); padding: 6px; border-radius: 24px; border: 4px solid #fff; box-shadow: 0 0 60px rgba(245,158,11,0.85);">  
+                <div class="bg-garage-950 px-8 py-6 sm:px-12 sm:py-8 rounded-[20px] text-center" style="background: #090a0f; padding: 24px 32px; border-radius: 18px; text-align: center;">  
+                    <div class="text-5xl sm:text-7xl mb-2" style="font-size: 48px; margin-bottom: 8px;">🏍️💨🔊</div>  
+                    <h2 class="font-racing text-4xl sm:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-white to-red-400 tracking-wider drop-shadow" style="font-size: 40px; color: #fbbf24; margin: 4px 0;">  
+                        "HIHUH!!"  
+                    </h2>  
+                    <p class="text-amber-300 font-bold text-sm sm:text-lg mt-2 tracking-widest uppercase" style="color: #fcd34d; font-weight: 700; font-size: 14px; text-transform: uppercase; margin-top: 8px;">  
+                        Mesin Menyala! Menuju Pilihan Kelas TBSM...  
+                    </p>  
+                </div>  
+            </div>  
+        </div>  
+
+    </div>  
+
+    <div class="w-full max-w-4xl z-10 mb-1" style="width: 100%; max-width: 880px; z-index: 10;">  
+        <div class="h-2.5 w-full hazard-strip rounded-b-xl" style="border-radius: 0 0 10px 10px;"></div>  
+    </div>  
+</div>  
+
+
+<!-- MAIN APP SHELL -->  
+<div id="main-app" class="hidden min-h-screen flex flex-col justify-between">  
+      
+    <div>  
+        <div class="h-2.5 w-full checkered-strip"></div>  
+
+        <header class="sticky top-0 z-30 glass-panel border-b border-slate-700/80" style="border-radius: 0; padding: 12px 16px;">  
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3" style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">  
+                  
+                <div onclick="showView('class-select')" class="flex items-center gap-3 cursor-pointer group" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">  
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-600 to-amber-500 flex items-center justify-center shadow-lg shadow-red-600/30 border border-white/20 group-hover:scale-105 transition" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #dc2626, #f59e0b); display: flex; align-items: center; justify-content: center;">  
+                        <i class="fa-solid fa-motorcycle text-white text-xl" style="color: #fff; font-size: 20px;"></i>  
+                    </div>  
+                    <div>  
+                        <div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">  
+                            <span class="font-racing text-lg sm:text-xl tracking-wide text-white group-hover:text-amber-400 transition" style="font-size: 18px; color: #fff;">GARASI KENANGAN PLP</span>  
+                            <span class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30 rounded" style="padding: 2px 6px; font-size: 10px; background: rgba(239,68,68,0.2); color: #f87171; border-radius: 4px;">TBSM EDITION</span>  
+                        </div>  
+                        <p class="text-xs text-slate-400" style="font-size: 12px; color: #94a3b8; margin: 2px 0 0;">Teknik dan Bisnis Sepeda Motor • Perpisahan PLP</p>  
+                    </div>  
+                </div>  
+            </div>  
+        </header>  
+    </div>  
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 fallback-container">  
+
+        <!-- VIEW 2: PILIHAN 4 KELAS -->  
+        <section id="view-class-select" class="space-y-8">  
+              
+            <div class="glass-panel rounded-3xl p-6 sm:p-10 border border-slate-700/80 text-center relative overflow-hidden" style="padding: 28px 20px; text-align: center; margin-bottom: 24px; position: relative; overflow: hidden;">  
+                <div class="relative z-10 max-w-2xl mx-auto" style="max-width: 680px; margin: 0 auto;">  
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-500/15 border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-widest mb-3" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 999px; background: rgba(239,68,68,0.15); color: #f87171; font-size: 11px; font-weight: 700;">  
+                        <i class="fa-solid fa-flag-checkered"></i> PILIH GARASI KELASMU  
+                    </span>  
+                    <h2 class="font-racing text-3xl sm:text-5xl text-white tracking-wide uppercase" style="font-size: clamp(24px, 4vw, 40px); margin: 10px 0;">  
+                        PILIH KELAS <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-400" style="color: #f59e0b;">TBSM</span>  
+                    </h2>  
+                    <p class="text-slate-300 text-sm sm:text-base mt-2" style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">  
+                        Silakan klik salah satu kelas di bawah ini untuk membuka <strong>6 Foto Polaroid Kenangan</strong> dan mengisi <strong>Kartu Pesan & Kesan Perpisahan PLP</strong>, atau buka halaman khusus <strong>For Me</strong>.  
+                    </p>  
+                </div>  
+            </div>  
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 fallback-grid-2" style="margin-bottom: 24px;">  
+                  
+                <!-- Card XI TBSM 1 -->  
+                <div onclick="openClassDetail('XI TBSM 1')" class="group glass-panel rounded-3xl p-6 sm:p-8 border-2 border-slate-700/80 hover:border-red-500 transition-all duration-300 cursor-pointer relative overflow-hidden hover:-translate-y-1.5 shadow-xl" style="padding: 24px; cursor: pointer;">  
+                    <div class="flex items-start justify-between gap-4 mb-5" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">  
+                        <span class="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-300 font-racing text-xs tracking-wider uppercase" style="padding: 4px 12px; border-radius: 999px; background: rgba(239,68,68,0.2); color: #fca5a5; font-size: 11px;">  
+                            PIT BOX #01  
+                        </span>  
+                        <span id="class-count-XI TBSM 1" class="px-3 py-1 rounded-full bg-garage-900 border border-slate-700 text-amber-400 text-xs font-bold" style="padding: 4px 12px; border-radius: 999px; background: #12151f; color: #fbbf24; font-size: 11px; font-weight: 700;">  
+                            0 Pesan Masuk  
+                        </span>  
+                    </div>  
+                    <div class="flex items-center gap-4 mb-4" style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">  
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-600 to-amber-500 flex items-center justify-center text-white text-3xl shadow-lg shadow-red-600/30 group-hover:scale-110 transition" style="width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg, #dc2626, #f59e0b); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; flex-shrink: 0;">  
+                            <i class="fa-solid fa-motorcycle"></i>  
+                        </div>  
+                        <div>  
+                            <h3 class="font-racing text-2xl sm:text-3xl text-white group-hover:text-amber-400 transition" style="font-size: 24px; margin: 0;">XI TBSM 1</h3>  
+                            <p class="text-xs sm:text-sm text-slate-400" style="color: #94a3b8; font-size: 13px; margin: 2px 0 0;">Engine Tune-Up & Injection Squad</p>  
+                        </div>  
+                    </div>  
+                    <p class="text-xs sm:text-sm text-slate-300 mb-6" style="color: #cbd5e1; font-size: 13px; margin-bottom: 18px;">  
+                        Lihat 6 dokumentasi foto polaroid kelas XI TBSM 1 dan kirim kartu pesan & kesan perpisahan PLP.  
+                    </p>  
+                    <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-racing text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-md group-hover:shadow-red-500/40 transition btn-racing-primary">  
+                        <span>Buka Kelas XI TBSM 1</span>  
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>  
+                    </div>  
+                </div>  
+
+                <!-- Card XI TBSM 2 -->  
+                <div onclick="openClassDetail('XI TBSM 2')" class="group glass-panel rounded-3xl p-6 sm:p-8 border-2 border-slate-700/80 hover:border-amber-500 transition-all duration-300 cursor-pointer relative overflow-hidden hover:-translate-y-1.5 shadow-xl" style="padding: 24px; cursor: pointer;">  
+                    <div class="flex items-start justify-between gap-4 mb-5" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">  
+                        <span class="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-racing text-xs tracking-wider uppercase" style="padding: 4px 12px; border-radius: 999px; background: rgba(245,158,11,0.2); color: #fcd34d; font-size: 11px;">  
+                            PIT BOX #02  
+                        </span>  
+                        <span id="class-count-XI TBSM 2" class="px-3 py-1 rounded-full bg-garage-900 border border-slate-700 text-amber-400 text-xs font-bold" style="padding: 4px 12px; border-radius: 999px; background: #12151f; color: #fbbf24; font-size: 11px; font-weight: 700;">  
+                            0 Pesan Masuk  
+                        </span>  
+                    </div>  
+                    <div class="flex items-center gap-4 mb-4" style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">  
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-red-600 flex items-center justify-center text-white text-3xl shadow-lg shadow-amber-500/30 group-hover:scale-110 transition" style="width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg, #f59e0b, #dc2626); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; flex-shrink: 0;">  
+                            <i class="fa-solid fa-screwdriver-wrench"></i>  
+                        </div>  
+                        <div>  
+                            <h3 class="font-racing text-2xl sm:text-3xl text-white group-hover:text-amber-400 transition" style="font-size: 24px; margin: 0;">XI TBSM 2</h3>  
+                            <p class="text-xs sm:text-sm text-slate-400" style="color: #94a3b8; font-size: 13px; margin: 2px 0 0;">Chassis, Electrical & CVT Masters</p>  
+                        </div>  
+                    </div>  
+                    <p class="text-xs sm:text-sm text-slate-300 mb-6" style="color: #cbd5e1; font-size: 13px; margin-bottom: 18px;">  
+                        Lihat 6 dokumentasi foto polaroid kelas XI TBSM 2 dan kirim kartu pesan & kesan perpisahan PLP.  
+                    </p>  
+                    <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-racing text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-amber-500 to-red-600 text-white shadow-md group-hover:shadow-amber-500/40 transition btn-racing-primary">  
+                        <span>Buka Kelas XI TBSM 2</span>  
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>  
+                    </div>  
+                </div>  
+
+                <!-- Card X TBSM 1 -->  
+                <div onclick="openClassDetail('X TBSM 1')" class="group glass-panel rounded-3xl p-6 sm:p-8 border-2 border-slate-700/80 hover:border-emerald-500 transition-all duration-300 cursor-pointer relative overflow-hidden hover:-translate-y-1.5 shadow-xl" style="padding: 24px; cursor: pointer;">  
+                    <div class="flex items-start justify-between gap-4 mb-5" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">  
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-racing text-xs tracking-wider uppercase" style="padding: 4px 12px; border-radius: 999px; background: rgba(16,185,129,0.2); color: #6ee7b7; font-size: 11px;">  
+                            PIT BOX #03  
+                        </span>  
+                        <span id="class-count-X TBSM 1" class="px-3 py-1 rounded-full bg-garage-900 border border-slate-700 text-amber-400 text-xs font-bold" style="padding: 4px 12px; border-radius: 999px; background: #12151f; color: #fbbf24; font-size: 11px; font-weight: 700;">  
+                            0 Pesan Masuk  
+                        </span>  
+                    </div>  
+                    <div class="flex items-center gap-4 mb-4" style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">  
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white text-3xl shadow-lg shadow-emerald-600/30 group-hover:scale-110 transition" style="width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg, #10b981, #0f766e); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; flex-shrink: 0;">  
+                            <i class="fa-solid fa-gears"></i>  
+                        </div>  
+                        <div>  
+                            <h3 class="font-racing text-2xl sm:text-3xl text-white group-hover:text-emerald-400 transition" style="font-size: 24px; margin: 0;">X TBSM 1</h3>  
+                            <p class="text-xs sm:text-sm text-slate-400" style="color: #94a3b8; font-size: 13px; margin: 2px 0 0;">Rookie Mechanic Pro Squad</p>  
+                        </div>  
+                    </div>  
+                    <p class="text-xs sm:text-sm text-slate-300 mb-6" style="color: #cbd5e1; font-size: 13px; margin-bottom: 18px;">  
+                        Lihat 6 dokumentasi foto polaroid kelas X TBSM 1 dan kirim kartu pesan & kesan perpisahan PLP.  
+                    </p>  
+                    <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-racing text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md group-hover:shadow-emerald-500/40 transition btn-racing-primary" style="background: linear-gradient(90deg, #10b981, #0d9488);">  
+                        <span>Buka Kelas X TBSM 1</span>  
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>  
+                    </div>  
+                </div>  
+
+                <!-- Card X TBSM 2 -->  
+                <div onclick="openClassDetail('X TBSM 2')" class="group glass-panel rounded-3xl p-6 sm:p-8 border-2 border-slate-700/80 hover:border-sky-500 transition-all duration-300 cursor-pointer relative overflow-hidden hover:-translate-y-1.5 shadow-xl" style="padding: 24px; cursor: pointer;">  
+                    <div class="flex items-start justify-between gap-4 mb-5" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">  
+                        <span class="px-3 py-1 rounded-full bg-sky-500/20 border border-sky-500/40 text-sky-300 font-racing text-xs tracking-wider uppercase" style="padding: 4px 12px; border-radius: 999px; background: rgba(14,165,233,0.2); color: #7dd3fc; font-size: 11px;">  
+                            PIT BOX #04  
+                        </span>  
+                        <span id="class-count-X TBSM 2" class="px-3 py-1 rounded-full bg-garage-900 border border-slate-700 text-amber-400 text-xs font-bold" style="padding: 4px 12px; border-radius: 999px; background: #12151f; color: #fbbf24; font-size: 11px; font-weight: 700;">  
+                            0 Pesan Masuk  
+                        </span>  
+                    </div>  
+                    <div class="flex items-center gap-4 mb-4" style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">  
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 flex items-center justify-center text-white text-3xl shadow-lg shadow-sky-600/30 group-hover:scale-110 transition" style="width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg, #0ea5e9, #1d4ed8); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; flex-shrink: 0;">  
+                            <i class="fa-solid fa-helmet-safety"></i>  
+                        </div>  
+                        <div>  
+                            <h3 class="font-racing text-2xl sm:text-3xl text-white group-hover:text-sky-400 transition" style="font-size: 24px; margin: 0;">X TBSM 2</h3>  
+                            <p class="text-xs sm:text-sm text-slate-400" style="color: #94a3b8; font-size: 13px; margin: 2px 0 0;">Future Racing Crew</p>  
+                        </div>  
+                    </div>  
+                    <p class="text-xs sm:text-sm text-slate-300 mb-6" style="color: #cbd5e1; font-size: 13px; margin-bottom: 18px;">  
+                        Lihat 6 dokumentasi foto polaroid kelas X TBSM 2 dan kirim kartu pesan & kesan perpisahan PLP.  
+                    </p>  
+                    <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-racing text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md group-hover:shadow-sky-500/40 transition btn-racing-primary" style="background: linear-gradient(90deg, #0ea5e9, #2563eb);">  
+                        <span>Buka Kelas X TBSM 2</span>  
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>  
+                    </div>  
+                </div>  
+
+            </div>  
+
+            <div class="glass-panel rounded-3xl p-6 border border-amber-500/40 flex flex-col sm:flex-row items-center justify-between gap-4" style="padding: 22px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">  
+                <div class="flex items-center gap-4" style="display: flex; align-items: center; gap: 14px;">  
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-2xl shrink-0" style="width: 48px; height: 48px; border-radius: 14px; background: rgba(245,158,11,0.2); color: #fbbf24; display: flex; align-items: center; justify-content: center; font-size: 22px;">  
+                        <i class="fa-solid fa-user-shield"></i>  
+                    </div>  
+                    <div>  
+                        <h3 class="font-racing text-lg sm:text-xl text-white uppercase" style="margin: 0; font-size: 18px;">Halaman Khusus "For Me" (Khusus Mahasiswa PLP)</h3>  
+                        <p class="text-xs sm:text-sm text-slate-300" style="margin: 4px 0 0; color: #cbd5e1; font-size: 13px;">Baca seluruh kartu pesan & kesan dari keempat kelas TBSM. Dilindungi kunci rahasia garasi.</p>  
+                    </div>  
+                </div>  
+                <button onclick="openForMePage()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl font-racing text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-400 hover:to-red-500 text-white shadow-lg flex items-center justify-center gap-2 transition cursor-pointer btn-racing-primary">  
+                    <i class="fa-solid fa-key"></i>  
+                    <span>Buka Halaman "For Me"</span>  
+                </button>  
+            </div>  
+
+        </section>  
+
+
+        <!-- VIEW 3: DETAIL KELAS -->  
+        <section id="view-class-detail" class="hidden space-y-10">  
+              
+            <div class="flex flex-wrap items-center justify-between gap-3" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-bottom: 20px;">  
+                <button onclick="showView('class-select')" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-semibold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer btn-dark-secondary">  
+                    <i class="fa-solid fa-arrow-left text-amber-400" style="color: #fbbf24;"></i>  
+                    <span>Kembali ke Pilihan Kelas</span>  
+                </button>  
+
+                <div class="flex items-center gap-2">  
+                    <button onclick="openForMePage()" class="px-5 py-2.5 rounded-xl font-racing text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-400 hover:to-red-500 text-white shadow-lg flex items-center gap-2 transition cursor-pointer btn-racing-primary">  
+                        <i class="fa-solid fa-lock"></i>  
+                        <span>Ke Halaman "For Me"</span>  
+                    </button>  
+                </div>  
+            </div>  
+
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-700/80 relative overflow-hidden" style="padding: 24px; margin-bottom: 28px;">  
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">  
+                    <div>  
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase mb-2" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(245,158,11,0.15); color: #fcd34d; font-size: 11px; font-weight: 700;">  
+                            <i class="fa-solid fa-flag-checkered"></i>  
+                            <span id="active-class-pit-label">PIT BOX #01 • BENGKEL OTOMOTIF</span>  
+                        </div>  
+                        <h2 id="active-class-title" class="font-racing text-3xl sm:text-4xl text-white tracking-wide" style="font-size: 30px; margin: 6px 0;">  
+                            KELAS XI TBSM 1  
+                        </h2>  
+                        <p id="active-class-desc" class="text-slate-300 text-sm sm:text-base mt-1" style="color: #cbd5e1; font-size: 14px; margin: 0;">  
+                            Galeri 6 Foto Polaroid Kenangan Praktek & Kartu Pesan Kesan Perpisahan PLP.  
+                        </p>  
+                    </div>  
+
+                    <div class="flex flex-wrap items-center gap-3">  
+                        <a href="#form-pesan-section" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-600 flex items-center gap-2 transition btn-dark-secondary" style="text-decoration: none;">  
+                            <i class="fa-solid fa-pen-to-square text-amber-400" style="color: #fbbf24;"></i>  
+                            <span>Isi Kartu Pesan & Kesan</span>  
+                        </a>  
+                    </div>  
+                </div>  
+            </div>  
+
+            <div style="margin-bottom: 32px;">  
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6" style="margin-bottom: 20px;">  
+                    <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 12px;">  
+                        <span class="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400" style="width: 40px; height: 40px; border-radius: 12px; background: rgba(239,68,68,0.2); color: #f87171; display: flex; align-items: center; justify-content: center;">  
+                            <i class="fa-solid fa-camera-retro text-lg"></i>  
+                        </span>  
+                        <div>  
+                            <h3 class="font-racing text-xl sm:text-2xl text-white tracking-wide" style="margin: 0; font-size: 22px;">  
+                                <span id="polaroid-count">6</span> FOTO POLAROID (<span id="polaroid-class-label" class="text-amber-400" style="color: #fbbf24;">XI TBSM 1</span>)  
+                            </h3>  
+                            <p class="text-xs sm:text-sm text-slate-400" style="margin: 2px 0 0; color: #94a3b8; font-size: 13px;">  
+                                Galeri <span id="polaroid-subtitle-count">6</span> Dokumentasi Kenangan PLP Kelas <span class="text-amber-300 font-semibold" id="polaroid-subtitle-class" style="color: #fcd34d;">XI TBSM 1</span>  
+                            </p>  
+                        </div>  
+                    </div>  
+                </div>  
+
+                <div id="polaroid-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 px-2 sm:px-4 fallback-grid-3"></div>  
+            </div>  
+
+            <div id="form-pesan-section" class="pt-4">  
+                <div class="glass-panel rounded-3xl border border-slate-700/90 overflow-hidden shadow-2xl" style="overflow: hidden;">  
+                    <div class="bg-gradient-to-r from-red-600 via-red-500 to-amber-500 px-6 py-4 flex flex-wrap items-center justify-between gap-2" style="background: linear-gradient(90deg, #dc2626, #f59e0b); padding: 16px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">  
+                        <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 12px;">  
+                            <i class="fa-solid fa-clipboard-check text-white text-2xl" style="font-size: 24px; color: #fff;"></i>  
+                            <div>  
+                                <h3 class="font-racing text-lg sm:text-xl text-white tracking-wider uppercase" style="margin: 0; font-size: 18px; color: #fff;">  
+                                    KARTU PESAN & KESAN PERPISAHAN PLP  
+                                </h3>  
+                                <p class="text-xs text-white/90 font-medium" style="margin: 2px 0 0; font-size: 12px; color: rgba(255,255,255,0.9);">  
+                                    Terkirim ke Database Supabase & dapat dilihat di Halaman "For Me"  
+                                </p>  
+                            </div>  
+                        </div>  
+                        <span id="form-class-badge" class="px-3 py-1 rounded-full bg-black/30 text-white text-xs font-racing uppercase border border-white/20" style="padding: 4px 12px; border-radius: 999px; background: rgba(0,0,0,0.35); color: #fff; font-size: 12px;">  
+                            XI TBSM 1  
+                        </span>  
+                    </div>  
+
+                    <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch" style="padding: 24px; align-items: stretch;">  
+                          
+                        <form id="message-form" onsubmit="submitMessage(event)" class="lg:col-span-7 space-y-5">  
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 fallback-grid-2" style="margin-bottom: 16px;">  
+                                <div>  
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2" style="display: block; font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 6px; text-transform: uppercase;">  
+                                        <i class="fa-solid fa-user-gear mr-1"></i> Nama Lengkap / Panggilan  
+                                    </label>  
+                                    <input type="text" id="input-nama" required placeholder="Contoh: Rizky Pratama"  
+                                        class="w-full px-4 py-3 rounded-xl bg-garage-900/90 border border-slate-700 focus:border-red-500 focus:outline-none text-white placeholder-slate-500 text-sm transition input-garage">  
+                                </div>  
+
+                                <div>  
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2" style="display: block; font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 6px; text-transform: uppercase;">  
+                                        <i class="fa-solid fa-motorcycle mr-1"></i> <span id="class-select-label">Kelas TBSM</span>  
+                                    </label>  
+                                    <div class="class-select-wrap" id="class-select-wrap">  
+                                        <input type="hidden" id="input-kelas" value="XI TBSM 1" required>  
+                                        <button type="button" class="class-select-trigger input-garage" id="class-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="class-select-label">  
+                                            <span id="class-select-value">XI TBSM 1</span>  
+                                            <i class="fa-solid fa-chevron-down class-select-arrow" aria-hidden="true"></i>  
+                                        </button>  
+                                        <div class="class-select-menu" id="class-select-menu" role="listbox" aria-label="Kelas TBSM" hidden>  
+                                            <button type="button" role="option" aria-selected="true" data-value="XI TBSM 1">XI TBSM 1</button>  
+                                            <button type="button" role="option" aria-selected="false" data-value="XI TBSM 2">XI TBSM 2</button>  
+                                            <button type="button" role="option" aria-selected="false" data-value="X TBSM 1">X TBSM 1</button>  
+                                            <button type="button" role="option" aria-selected="false" data-value="X TBSM 2">X TBSM 2</button>  
+                                        </div>  
+                                    </div>  
+                                </div>  
+                            </div>  
+
+                            <div style="margin-bottom: 16px;">  
+                                <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2" style="display: block; font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 6px; text-transform: uppercase;">  
+                                    <i class="fa-solid fa-comment-dots mr-1"></i> Pesan & Kesan Selama PLP  
+                                </label>  
+                                <textarea id="input-pesan" rows="4" required  
+                                    placeholder="Tuliskan kesan seru waktu praktek bengkel, pesan buat kakak mahasiswa PLP, atau doa terbaik ke depannya..."  
+                                    class="w-full px-4 py-3 rounded-xl bg-garage-900/90 border border-slate-700 focus:border-red-500 focus:outline-none text-white placeholder-slate-500 text-sm transition input-garage"></textarea>  
+                            </div>  
+
+                            <div class="flex flex-wrap items-center gap-3 pt-2" style="display: flex; flex-wrap: wrap; gap: 12px;">  
+                                <button type="submit" id="btn-submit-pesan" class="flex-1 sm:flex-none px-7 py-3.5 rounded-xl font-racing text-sm uppercase tracking-wider bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer btn-racing-primary">  
+                                    <i class="fa-solid fa-paper-plane"></i>  
+                                    <span>Kirim Pesan</span>  
+                                </button>  
+
+                                <button type="button" onclick="openForMePage()" class="px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-semibold text-sm flex items-center justify-center gap-2 transition cursor-pointer btn-dark-secondary" style="color: #fcd34d;">  
+                                    <i class="fa-solid fa-lock text-xs"></i>  
+                                    <span>For Me</span>  
+                                </button>  
+                            </div>  
+                        </form>  
+
+                        <div class="lg:col-span-5 bg-garage-900/90 border border-slate-800 rounded-2xl p-5 space-y-4 h-full" style="background: #12151f; border: 1px solid #1e293b; border-radius: 16px; padding: 18px; height: 100%;">  
+                            <div class="flex items-center gap-3 border-b border-slate-800 pb-3" style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 12px;">  
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-amber-400" style="width: 40px; height: 40px; border-radius: 10px; background: rgba(245,158,11,0.15); color: #fbbf24; display: flex; align-items: center; justify-content: center;">  
+                                    <i class="fa-solid fa-database"></i>  
+                                </div>  
+                                <div>  
+                                    <h4 class="font-racing text-sm text-white uppercase" style="margin: 0; font-size: 14px;">Langkah Pengisian Pesan</h4>  
+                                    <p class="text-xs text-slate-400" style="margin: 2px 0 0; font-size: 12px; color: #94a3b8;">Isi nama, pilih kelas, tulis pesan dan kesan, lalu klik Kirim Pesan.</p>  
+                                </div>  
+                            </div>  
+
+                            <ul class="text-xs sm:text-sm text-slate-300 space-y-2.5" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.6;">  
+                                <li class="flex items-start gap-2" style="margin-bottom: 8px;">  
+                                    <i class="fa-solid fa-circle-check text-emerald-400 mt-1" style="color: #34d399; margin-right: 6px;"></i>  
+                                    <span>Isi <strong>Nama</strong> dan pastikan <strong>Kelas</strong> sesuai dengan kelasmu.</span>  
+                                </li>  
+                                <li class="flex items-start gap-2" style="margin-bottom: 8px;">  
+                                    <i class="fa-solid fa-circle-check text-emerald-400 mt-1" style="color: #34d399; margin-right: 6px;"></i>  
+                                    <span>Tulis <strong>Pesan & Kesan</strong> paling berkesan selama kegiatan PLP berlangsung.</span>  
+                                </li>  
+                                <li class="flex items-start gap-2">  
+                                    <i class="fa-solid fa-circle-check text-emerald-400 mt-1" style="color: #34d399; margin-right: 6px;"></i>  
+                                    <span>Klik <strong>Kirim Pesan</strong> untuk mengirim pesan dan kesanmu!</span>  
+                                </li>  
+                            </ul>  
+                        </div>  
+
+                    </div>  
+                </div>  
+            </div>  
+
+        </section>  
+
+
+        <!-- VIEW 4: HALAMAN "FOR ME" -->  
+        <section id="view-for-me" class="hidden space-y-8">  
+              
+            <div class="flex flex-wrap items-center justify-between gap-3" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-bottom: 20px;">  
+                <div class="flex flex-wrap items-center gap-2" style="display: flex; flex-wrap: wrap; gap: 8px;">  
+                    <button onclick="lockAndExitForMe('class-select')" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-semibold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer btn-dark-secondary">  
+                        <i class="fa-solid fa-grip text-amber-400" style="color: #fbbf24;"></i>  
+                        <span>Ke Pilihan 4 Kelas</span>  
+                    </button>  
+                    <button onclick="lockAndExitForMe('class-detail')" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer btn-dark-secondary">  
+                        <i class="fa-solid fa-arrow-left text-red-400" style="color: #f87171;"></i>  
+                        <span id="btn-back-last-class-label">Kembali ke Kelas XI TBSM 1</span>  
+                    </button>  
+                </div>  
+
+  
+            </div>  
+
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-amber-500/40 relative overflow-hidden" style="padding: 24px; margin-bottom: 24px;">  
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">  
+                    <div>  
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase mb-2" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(245,158,11,0.2); color: #fcd34d; font-size: 11px; font-weight: 700;">  
+                            <i class="fa-solid fa-heart text-red-400"></i>  
+                            <span>HALAMAN TERSENDIRI • SPECIAL FOR ME</span>  
+                        </div>  
+                        <h2 class="font-racing text-3xl sm:text-4xl text-white tracking-wide" style="font-size: 28px; margin: 6px 0;">  
+                            FOR ME — KARTU PESAN & KESAN PLP  
+                        </h2>  
+                        <p class="text-slate-300 text-sm sm:text-base mt-1" style="color: #cbd5e1; font-size: 14px;">  
+                            Kumpulan seluruh kartu pesan dan kesan dari siswa kelas <strong>XI TBSM 1, XI TBSM 2, X TBSM 1, dan X TBSM 2</strong>.  
+                        </p>  
+                    </div>  
+                </div>  
+
+                <div class="mt-6 pt-5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3" style="margin-top: 18px; padding-top: 16px; border-top: 1px solid #1e293b; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">  
+                    <div class="flex flex-wrap items-center gap-2" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">  
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1" style="font-size: 12px; color: #94a3b8; font-weight: 700;">Filter Kelas:</span>  
+                        <button onclick="filterForMeMessages('ALL')" id="filter-ALL" class="forme-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase transition cursor-pointer btn-dark-secondary">  
+                            Semua Kelas  
+                        </button>  
+                        <button onclick="filterForMeMessages('XI TBSM 1')" id="filter-XI TBSM 1" class="forme-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase transition cursor-pointer btn-dark-secondary">  
+                            XI TBSM 1  
+                        </button>  
+                        <button onclick="filterForMeMessages('XI TBSM 2')" id="filter-XI TBSM 2" class="forme-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase transition cursor-pointer btn-dark-secondary">  
+                            XI TBSM 2  
+                        </button>  
+                        <button onclick="filterForMeMessages('X TBSM 1')" id="filter-X TBSM 1" class="forme-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase transition cursor-pointer btn-dark-secondary">  
+                            X TBSM 1  
+                        </button>  
+                        <button onclick="filterForMeMessages('X TBSM 2')" id="filter-X TBSM 2" class="forme-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase transition cursor-pointer btn-dark-secondary">  
+                            X TBSM 2  
+                        </button>  
+                    </div>  
+
+                    <span id="forme-total-label" class="text-xs font-semibold text-amber-400" style="color: #fbbf24; font-size: 12px; font-weight: 700;">  
+                        Menampilkan 0 Kartu Pesan  
+                    </span>  
+                </div>  
+            </div>  
+
+            <div id="forme-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fallback-grid-3"></div>  
+
+        </section>  
+
+    </main>  
+
+    <footer class="border-t border-slate-800/80 bg-garage-950/90 py-5 px-4 text-center text-xs text-slate-400" style="border-top: 1px solid #1e293b; background: #090a0f; padding: 18px 16px; text-align: center; font-size: 12px; color: #94a3b8;">  
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2" style="max-width: 1200px; margin: 0 auto;">  
+            <p class="font-semibold text-slate-300" style="margin: 4px 0; color: #cbd5e1;">  
+                <i class="fa-solid fa-motorcycle text-red-500 mr-1" style="color: #ef4444;"></i> Kenangan Perpisahan PLP — Teknik & Bisnis Sepeda Motor (TBSM)  
+            </p>  
+            <p style="margin: 4px 0;">XI TBSM 1 • XI TBSM 2 • X TBSM 1 • X TBSM 2</p>  
+        </div>  
+    </footer>  
+</div>  
+
+
+<!-- MODAL PASSWORD FOR ME (AtianGanteng) -->  
+<div id="forme-password-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4 modal-backdrop">  
+    <div id="forme-password-card" class="glass-panel rounded-3xl max-w-md w-full p-6 sm:p-8 border-2 border-amber-500/50 shadow-[0_0_50px_rgba(245,158,11,0.25)] space-y-5 relative overflow-hidden" style="max-width: 440px; width: 100%; padding: 24px; position: relative;">  
+          
+        <div class="absolute top-0 left-0 right-0 h-2 checkered-strip" style="position: absolute; top: 0; left: 0; right: 0;"></div>  
+
+        <div class="flex items-center justify-between pt-2" style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px; margin-bottom: 12px;">  
+            <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 12px;">  
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-red-600 flex items-center justify-center text-white text-xl shadow-lg shadow-amber-500/30" style="width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, #f59e0b, #dc2626); display: flex; align-items: center; justify-content: center; color: #fff;">  
+                    <i class="fa-solid fa-key"></i>  
+                </div>  
+                <div>  
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-amber-400 block" style="font-size: 10px; color: #fbbf24; font-weight: 700; display: block;">PRIVATE GARAGE ACCESS</span>  
+                    <h3 class="font-racing text-xl text-white uppercase" style="margin: 2px 0 0; font-size: 20px;">Buka Halaman "For Me"</h3>  
+                </div>  
+            </div>  
+            <button type="button" onclick="closeForMePasswordModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer btn-dark-secondary" style="padding: 8px 12px;">  
+                <i class="fa-solid fa-xmark text-lg"></i>  
+            </button>  
+        </div>  
+
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed" style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 14px;">  
+            Halaman <strong>For Me</strong> bersifat rahasia dan berisi seluruh kartu pesan & kesan siswa TBSM. Masukkan password khusus untuk membuka kunci garasi:  
+        </p>  
+
+        <form onsubmit="verifyForMePassword(event)" class="space-y-4">  
+            <div style="margin-bottom: 16px;">  
+                <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2" style="display: block; font-size: 12px; color: #fbbf24; font-weight: 700; margin-bottom: 6px;">  
+                    <i class="fa-solid fa-lock mr-1"></i> Password Akses "For Me"  
+                </label>  
+                <div class="relative" style="position: relative;">  
+                    <input type="password" id="forme-password-input" required placeholder="Masukkan password..." autocomplete="off"  
+                        class="w-full pl-4 pr-12 py-3.5 rounded-xl bg-garage-950 border border-slate-700 focus:border-amber-500 focus:outline-none text-white placeholder-slate-500 text-sm font-medium transition input-garage">  
+                    <button type="button" onclick="toggleForMePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-1.5 cursor-pointer" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #94a3b8; cursor: pointer;" title="Lihat / Sembunyikan Password">  
+                        <i id="forme-password-eye" class="fa-solid fa-eye"></i>  
+                    </button>  
+                </div>  
+                <p id="forme-password-error" class="hidden text-xs font-semibold text-red-400 mt-2 flex items-center gap-1.5" style="color: #f87171; font-size: 12px; margin-top: 8px;">  
+                    <i class="fa-solid fa-triangle-exclamation"></i>  
+                    <span>Password salah Bosku! Coba masukkan lagi dengan benar.</span>  
+                </p>  
+            </div>  
+
+            <div class="flex items-center justify-end gap-2.5 pt-2" style="display: flex; justify-content: flex-end; gap: 10px;">  
+                <button type="button" onclick="closeForMePasswordModal()" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider transition cursor-pointer btn-dark-secondary">  
+                    Batal  
+                </button>  
+                <button type="submit" class="px-6 py-3 rounded-xl font-racing text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-400 hover:to-red-500 text-white shadow-lg shadow-red-600/30 flex items-center gap-2 transition active:scale-95 cursor-pointer btn-racing-primary">  
+                    <i class="fa-solid fa-unlock-keyhole"></i>  
+                    <span>Buka For Me</span>  
+                </button>  
+            </div>  
+        </form>  
+    </div>  
+</div>  
+
+
+<div id="toast-box" class="fixed bottom-5 right-5 z-50 hidden max-w-sm glass-panel border-l-4 border-amber-400 px-5 py-4 rounded-2xl shadow-2xl text-white flex items-center gap-3" style="position: fixed; bottom: 20px; right: 20px; z-index: 70; max-width: 340px; padding: 14px 18px; border-left: 4px solid #fbbf24; display: flex; align-items: center; gap: 12px;">  
+    <i id="toast-icon" class="fa-solid fa-circle-check text-amber-400 text-xl" style="color: #fbbf24; font-size: 20px;"></i>  
+    <div>  
+        <h4 id="toast-title" class="font-racing text-xs uppercase tracking-wider text-amber-300" style="margin: 0; font-size: 12px; color: #fcd34d;">Notifikasi Bengkel</h4>  
+        <p id="toast-message" class="text-xs sm:text-sm text-slate-200 mt-0.5" style="margin: 4px 0 0; font-size: 13px; color: #e2e8f0;"></p>  
+    </div>  
+</div>  
+
+<!-- 3 FILE AUDIO TERPISAH -->  
+<audio id="audio-start-1" preload="auto">  
+    <source src="start 1.mp3" type="audio/mpeg">  
+    <source src="start 1.wav" type="audio/wav">  
+    <source src="start 1.ogg" type="audio/ogg">  
+</audio>  
+<audio id="audio-start-2" preload="auto">  
+    <source src="start 1.mp3" type="audio/mpeg">  
+    <source src="start 1.wav" type="audio/wav">  
+    <source src="start 1.ogg" type="audio/ogg">  
+</audio>  
+<audio id="audio-start-3" preload="auto">  
+    <source src="start 3.mp3" type="audio/mpeg">  
+    <source src="start 3.wav" type="audio/wav">  
+    <source src="start 3.ogg" type="audio/ogg">  
+</audio>  
+
+
+<script>  
+    const classSelectWrap = document.getElementById('class-select-wrap');  
+    const classSelectTrigger = document.getElementById('class-select-trigger');  
+    const classSelectMenu = document.getElementById('class-select-menu');  
+    const classSelectValue = document.getElementById('class-select-value');  
+    const classSelectInput = document.getElementById('input-kelas');  
+    const classSelectOptions = Array.from(classSelectMenu.querySelectorAll('[role="option"]'));  
+  
+    function setClassSelectOpen(open) {  
+        classSelectWrap.classList.toggle('is-open', open);  
+        classSelectTrigger.setAttribute('aria-expanded', String(open));  
+        if (open) {  
+            classSelectMenu.hidden = false;  
+            requestAnimationFrame(() => classSelectWrap.classList.add('is-open'));  
+        } else {  
+            classSelectWrap.classList.remove('is-open');  
+            classSelectMenu.hidden = true;  
+        }  
+    }  
+  
+    classSelectTrigger.addEventListener('click', () => {  
+        setClassSelectOpen(classSelectMenu.hidden);  
+    });  
+    classSelectOptions.forEach(option => {  
+        option.addEventListener('click', () => {  
+            const value = option.dataset.value;  
+            classSelectInput.value = value;  
+            classSelectValue.textContent = value;  
+            classSelectOptions.forEach(item => item.setAttribute('aria-selected', String(item === option)));  
+            setClassSelectOpen(false);  
+            classSelectTrigger.focus();  
+        });  
+    });  
+    document.addEventListener('click', event => {  
+        if (!classSelectWrap.contains(event.target)) setClassSelectOpen(false);  
+    });  
+    classSelectTrigger.addEventListener('keydown', event => {  
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {  
+            event.preventDefault();  
+            setClassSelectOpen(true);  
+            const selected = classSelectOptions.findIndex(option => option.dataset.value === classSelectInput.value);  
+            classSelectOptions[(selected + (event.key === 'ArrowDown' ? 1 : -1) + classSelectOptions.length) % classSelectOptions.length].focus();  
+        } else if (event.key === 'Escape') {  
+            setClassSelectOpen(false);  
+        }  
+    });  
+    classSelectMenu.addEventListener('keydown', event => {  
+        const current = classSelectOptions.indexOf(document.activeElement);  
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {  
+            event.preventDefault();  
+            classSelectOptions[(current + (event.key === 'ArrowDown' ? 1 : -1) + classSelectOptions.length) % classSelectOptions.length].focus();  
+        } else if (event.key === 'Escape') {  
+            setClassSelectOpen(false);  
+            classSelectTrigger.focus();  
+        }  
+    });  
+    classSelectOptions.forEach(option => option.addEventListener('keydown', event => {  
+        if (event.key === 'Enter' || event.key === ' ') {  
+            event.preventDefault();  
+            option.click();  
+        }  
+    }));  
+  
+    const DEFAULT_SUPABASE_URL = 'https://maupqdwhrkgqrzsqzixs.supabase.co';  
+    const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_0ca2Z4cFO9rU1J1mUcRvuw_OEgOGGAk';  
+
+    const CLASS_POLAROID_FILES = {  
+        'XI TBSM 1': [  
+            { src: 'XI TBSM1 1.jpg', caption: 'Foto Bersama #1 - XI TBSM 1' },  
+            { src: 'XI TBSM1 2.jpg', caption: 'Foto Bersama #2 - XI TBSM 1' },  
+            { src: 'XI TBSM1 3.jpg', caption: 'Foto Bersama #3 - XI TBSM 1' },  
+            { src: 'XI TBSM1 4.jpg', caption: 'Foto Bersama #4 - XI TBSM 1' },  
+            { src: 'XI TBSM1 5.jpg', caption: 'Sodapnya Turu  #5 - XI TBSM 1' },  
+            { src: 'XI TBSM1 6.jpg', caption: 'Hmmm... #6 - XI TBSM 1' }  
+        ],  
+        'XI TBSM 2': [  
+            { src: 'XI TBSM2 1.jpg', caption: 'Foto Bersama #1 - XI TBSM 2' },  
+            { src: 'XI TBSM2 2.jpg', caption: 'Sofi #2 - XI TBSM 2' },  
+            { src: 'XI TBSM2 3.jpg', caption: 'Choirul Umam#3 - XI TBSM 2' },  
+            { src: 'XI TBSM2 4.jpg', caption: 'Nasrul #4 - XI TBSM 2' },  
+            { src: 'XI TBSM2 5.jpg', caption: 'Praktek Bongkar Ban #5 - XI TBSM 2' },  
+            { src: 'XI TBSM2 6.jpg', caption: 'Praktek CVT #6 - XI TBSM 2' },  
+            { src: 'XI TBSM2 7.jpg', caption: 'Wisnu DKK #7 - XI TBSM 2' },  
+            { src: 'XI TBSM2 8.jpg', caption: 'Foto Bersama Wali Kelas #8 - XI TBSM 2' },  
+            { src: 'XI TBSM2 9.jpg', caption: 'Foto Bersama Setelah Praktek #9 - XI TBSM 2' },  
+            { src: 'XI TBSM2 10.jpg', caption: 'Boys #10 - XI TBSM 2' },  
+            { src: 'XI TBSM2 11.jpg', caption: 'Boys Praktek #11 - XI TBSM 2' }  
+        ],  
+        'X TBSM 1': [  
+            { src: 'X TBSM1 1.jpg', caption: 'Foto Bersama #1 - X TBSM 1' },  
+            { src: 'X TBSM1 2.jpg', caption: 'Foto Bersama #2 - X TBSM 1' },  
+            { src: 'X TBSM1 3.jpg', caption: 'Mantapp #3 - X TBSM 1' },  
+            { src: 'X TBSM1 4.jpg', caption: 'Turu Guys #4 - X TBSM 1' },  
+            { src: 'X TBSM1 5.jpg', caption: 'Mwehehee #5 - X TBSM 1' },  
+            { src: 'X TBSM1 6.jpg', caption: 'Welll #6 - X TBSM 1' }  
+        ],  
+        'X TBSM 2': [  
+            { src: 'X TBSM2 1.jpg', caption: 'Foto Bersama #1 - X TBSM 2' },  
+            { src: 'X TBSM2 2.jpg', caption: 'Foto Bersama #2 - X TBSM 2' },  
+            { src: 'X TBSM2 3.jpg', caption: 'Belajar #3 - X TBSM 2' },  
+            { src: 'X TBSM2 4.jpg', caption: 'Menggambar #4 - X TBSM 2' },  
+            { src: 'X TBSM2 5.jpg', caption: 'Lemes #5 - X TBSM 2' }  
+        ]  
+    };  
+
+    const STORAGE_KEY_LOCAL_MESSAGES = 'plp_tbsm_messages_backup_v2';  
+    const CLASSES = ['XI TBSM 1', 'XI TBSM 2', 'X TBSM 1', 'X TBSM 2'];  
+    const CLASS_METADATA = {  
+        'XI TBSM 1': { pit: 'PIT BOX #01 • ENGINE TUNE-UP & INJECTION', desc: 'Galeri 6 Foto Polaroid Kenangan Praktek & Kartu Pesan Kesan Perpisahan PLP Kelas XI TBSM 1.' },  
+        'XI TBSM 2': { pit: 'PIT BOX #02 • CHASSIS, ELECTRICAL & CVT', desc: 'Galeri 11 Foto Polaroid Kenangan Praktek & Kartu Pesan Kesan Perpisahan PLP Kelas XI TBSM 2.' },  
+        'X TBSM 1': { pit: 'PIT BOX #03 • ROOKIE MECHANIC PRO SQUAD', desc: 'Galeri 6 Foto Polaroid Kenangan Praktek & Kartu Pesan Kesan Perpisahan PLP Kelas X TBSM 1.' },  
+        'X TBSM 2': { pit: 'PIT BOX #04 • FUTURE RACING CREW', desc: 'Galeri 6 Foto Polaroid Kenangan Praktek & Kartu Pesan Kesan Perpisahan PLP Kelas X TBSM 2.' }  
+    };  
+
+    let supabaseClient = null;  
+    let currentClass = 'XI TBSM 1';  
+    let currentForMeFilter = 'ALL';  
+    let prankStep = 0;  
+
+    const defaultMessages = [  
+        { id: 'local-1', nama: 'Dimas Racing', kelas: 'XI TBSM 1', pesan: 'Terima kasih banyak Kakak PLP sudah sabar membimbing kami bongkar pasang mesin & servis injeksi di bengkel.', created_at: new Date(Date.now() - 3600000 * 5).toISOString() },  
+        { id: 'local-2', nama: 'Rizky CVT', kelas: 'XI TBSM 2', pesan: 'Kesan selama PLP seru banget, gak kaku dan ilmunya gampang dipahami waktu praktek kelistrikan motor.', created_at: new Date(Date.now() - 3600000 * 3).toISOString() },  
+        { id: 'local-3', nama: 'Fajar Garage', kelas: 'X TBSM 1', pesan: 'Walaupun kami baru kelas X, kakak PLP ramah banget ngajarin pengenalan kunci-kunci bengkel. Semoga cepat wisuda!', created_at: new Date(Date.now() - 3600000 * 2).toISOString() },  
+        { id: 'local-4', nama: 'Bima Throttle', kelas: 'X TBSM 2', pesan: 'Mantap jiwa Kak! Semoga kita bisa ketemu lagi di lain waktu. Salam satu aspal dari X TBSM 2!', created_at: new Date(Date.now() - 3600000 * 1).toISOString() }  
+    ];  
+
+    let messagesCache = loadLocalMessages();  
+
+    function loadLocalMessages() {  
+        try {  
+            const raw = localStorage.getItem(STORAGE_KEY_LOCAL_MESSAGES);  
+            if (raw) {  
+                const parsed = JSON.parse(raw);  
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;  
+            }  
+        } catch (err) {  
+            console.warn(err);  
+        }  
+        return [...defaultMessages];  
+    }  
+
+    function saveLocalMessages(list) {  
+        try {  
+            localStorage.setItem(STORAGE_KEY_LOCAL_MESSAGES, JSON.stringify(list));  
+        } catch (err) {  
+            console.warn(err);  
+        }  
+    }  
+
+    let audioCtx = null;  
+    function getAudioContext() {  
+        if (!audioCtx) {  
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;  
+            if (AudioContextClass) audioCtx = new AudioContextClass();  
+        }  
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();  
+        return audioCtx;  
+    }  
+
+    function stopAllStartSounds() {  
+        [1, 2, 3].forEach(num => {  
+            const el = document.getElementById(`audio-start-${num}`);  
+            if (el) { el.pause(); el.currentTime = 0; }  
+        });  
+    }  
+
+    function playStartStageSound(stageNumber, onEndedCallback = null) {  
+        try {  
+            stopAllStartSounds();  
+            const audioEl = document.getElementById(`audio-start-${stageNumber}`);  
+            let finished = false;  
+            const triggerDone = () => {  
+                if (finished) return;  
+                finished = true;  
+                if (typeof onEndedCallback === 'function') onEndedCallback();  
+            };  
+
+            if (audioEl) {  
+                audioEl.onended = onEndedCallback ? triggerDone : null;  
+                const playPromise = audioEl.play();  
+                if (playPromise !== undefined) {  
+                    playPromise.then(() => {  
+                        if (onEndedCallback) setTimeout(triggerDone, 5000);  
+                    }).catch(() => {  
+                        playFallbackStageSynth(stageNumber);  
+                        if (onEndedCallback) setTimeout(triggerDone, 1600);  
+                    });  
+                } else if (onEndedCallback) {  
+                    setTimeout(triggerDone, 1800);  
+                }  
+            } else {  
+                playFallbackStageSynth(stageNumber);  
+                if (onEndedCallback) setTimeout(triggerDone, 1600);  
+            }  
+        } catch (e) {  
+            if (typeof onEndedCallback === 'function') setTimeout(onEndedCallback, 1500);  
+        }  
+    }  
+
+    function playFallbackStageSynth(stageNumber) {  
+        try {  
+            const ctx = getAudioContext();  
+            if (ctx) {  
+                const now = ctx.currentTime;  
+                const pulses = stageNumber === 1 ? 2 : 3;  
+                for (let i = 0; i < pulses; i++) {  
+                    const t = now + i * 0.13;  
+                    const osc = ctx.createOscillator();  
+                    const gain = ctx.createGain();  
+                    osc.type = 'sawtooth';  
+                    osc.frequency.setValueAtTime(100 + stageNumber * 20, t);  
+                    osc.frequency.linearRampToValueAtTime(190 + stageNumber * 30, t + 0.09);  
+                    gain.gain.setValueAtTime(0.22, t);  
+                    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);  
+                    osc.connect(gain);  
+                    gain.connect(ctx.destination);  
+                    osc.start(t);  
+                    osc.stop(t + 0.1);  
+                }  
+            }  
+            if (stageNumber === 3 && 'speechSynthesis' in window) {  
+                setTimeout(() => {  
+                    window.speechSynthesis.cancel();  
+                    const utter = new SpeechSynthesisUtterance('Hihuh!');  
+                    utter.lang = 'id-ID';  
+                    utter.pitch = 1.65;  
+                    utter.rate = 1.15;  
+                    window.speechSynthesis.speak(utter);  
+                }, 380);  
+            }  
+        } catch (err) {}  
+    }  
+
+    function playDodgeSound(step) {  
+        try {  
+            const ctx = getAudioContext();  
+            if (!ctx) return;  
+            const now = ctx.currentTime;  
+            const osc = ctx.createOscillator();  
+            const gain = ctx.createGain();  
+            osc.type = 'triangle';  
+            osc.frequency.setValueAtTime(step === 1 ? 240 : 420, now);  
+            osc.frequency.exponentialRampToValueAtTime(160, now + 0.09);  
+            gain.gain.setValueAtTime(0.15, now);  
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);  
+            osc.connect(gain);  
+            gain.connect(ctx.destination);  
+            osc.start(now);  
+            osc.stop(now + 0.09);  
+        } catch (e) {}  
+    }  
+
+    function handlePrankClick() {  
+        const wrapper = document.getElementById('prank-btn-wrapper');  
+        const tooltip = document.getElementById('prank-tooltip');  
+        const btnText = document.getElementById('prank-btn-text');  
+
+        if (prankStep === 0) {  
+            prankStep = 1;  
+            playStartStageSound(1);  
+            wrapper.className = 'prank-pos-bottom absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center';  
+            tooltip.textContent = '😜 Eits mesin belum nyala! Starter lagi di bawah Bosku!';  
+            btnText.textContent = 'Coba Klik Disini';  
+        } else if (prankStep === 1) {  
+            prankStep = 2;  
+            playStartStageSound(2);  
+            wrapper.className = 'prank-pos-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center';  
+            tooltip.textContent = '🔥 Pas di Tengah! Klik Starter Terakhir Buat Buka Kelas!';  
+            btnText.textContent = 'Buka Garasi TBSM!';  
+        } else {  
+            wrapper.classList.add('hidden');  
+            const popup = document.getElementById('hihuh-popup');  
+            popup.classList.remove('hidden');  
+
+            playStartStageSound(3, () => {  
+                showView('class-select');  
+            });  
+        }  
+    }  
+
+    function showView(viewName) {  
+        const viewPrank = document.getElementById('view-prank');  
+        const mainApp = document.getElementById('main-app');  
+        const viewClassSelect = document.getElementById('view-class-select');  
+        const viewClassDetail = document.getElementById('view-class-detail');  
+        const viewForMe = document.getElementById('view-for-me');  
+
+        if (viewName === 'prank') {  
+            viewPrank.classList.remove('hidden');  
+            mainApp.classList.add('hidden');  
+            window.scrollTo({ top: 0, behavior: 'smooth' });  
+            return;  
+        }  
+
+        viewPrank.classList.add('hidden');  
+        mainApp.classList.remove('hidden');  
+
+        viewClassSelect.classList.add('hidden');  
+        viewClassDetail.classList.add('hidden');  
+        viewForMe.classList.add('hidden');  
+
+        if (viewName === 'class-select') {  
+            viewClassSelect.classList.remove('hidden');  
+            updateClassCounters();  
+        } else if (viewName === 'class-detail') {  
+            viewClassDetail.classList.remove('hidden');  
+        } else if (viewName === 'for-me') {  
+            viewForMe.classList.remove('hidden');  
+        }  
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });  
+    }  
+
+    function openClassDetail(className) {  
+        currentClass = className;  
+        const meta = CLASS_METADATA[className] || CLASS_METADATA['XI TBSM 1'];  
+
+        document.getElementById('active-class-pit-label').textContent = meta.pit;  
+        document.getElementById('active-class-title').textContent = `KELAS ${className}`;  
+        document.getElementById('active-class-desc').textContent = meta.desc;  
+        document.getElementById('polaroid-class-label').textContent = className;  
+        const photoCount = (CLASS_POLAROID_FILES[className] || []).length;  
+        document.getElementById('polaroid-count').textContent = photoCount;  
+        document.getElementById('polaroid-subtitle-count').textContent = photoCount;  
+        const subCls = document.getElementById('polaroid-subtitle-class');  
+        if (subCls) subCls.textContent = className;  
+        document.getElementById('form-class-badge').textContent = className;  
+        document.getElementById('input-kelas').value = className;  
+        document.getElementById('class-select-value').textContent = className;  
+        document.querySelectorAll('#class-select-menu [role="option"]').forEach(option => {  
+            option.setAttribute('aria-selected', String(option.dataset.value === className));  
+        });  
+        document.getElementById('btn-back-last-class-label').textContent = `Kembali ke Kelas ${className}`;  
+
+        renderClassPolaroids(className);  
+        showView('class-detail');  
+    }  
+
+    function createDefaultSvgDataUri(className, slotNum, fileNameHint) {  
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect width="600" height="450" fill="#1e293b"/><text x="300" y="210" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="bold" font-size="28">${className}</text><text x="300" y="260" text-anchor="middle" fill="#f59e0b" font-family="monospace" font-size="18">${fileNameHint}</text></svg>`;  
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);  
+    }  
+
+    function handlePolaroidImageError(imgEl, baseFileName, className, slotNum) {  
+        const triedStep = parseInt(imgEl.getAttribute('data-try-step') || '0', 10);  
+        if (triedStep === 0) {  
+            imgEl.setAttribute('data-try-step', '1');  
+            imgEl.src = `${baseFileName}.jpeg`;  
+        } else if (triedStep === 1) {  
+            imgEl.setAttribute('data-try-step', '2');  
+            imgEl.src = `${baseFileName}.png`;  
+        } else if (triedStep === 2) {  
+            imgEl.setAttribute('data-try-step', '3');  
+            imgEl.src = baseFileName;  
+        } else {  
+            imgEl.onerror = null;  
+            imgEl.src = createDefaultSvgDataUri(className, slotNum, `${baseFileName}.jpg`);  
+        }  
+    }  
+
+    function renderClassPolaroids(className) {  
+        const grid = document.getElementById('polaroid-grid');  
+        const compactClassPrefix = className.replace('TBSM ', 'TBSM');  
+        const configuredList = CLASS_POLAROID_FILES[className] || [];  
+        const photoCount = configuredList.length;  
+        document.getElementById('polaroid-count').textContent = photoCount;  
+        document.getElementById('polaroid-subtitle-count').textContent = photoCount;  
+  
+        grid.innerHTML = Array.from({ length: photoCount }, (_, idx) => idx + 1).map((slotNum, idx) => {
+            const baseFileName = `${compactClassPrefix} ${slotNum}`;  
+            const itemConfig = configuredList[idx] || {  
+                src: `${baseFileName}.jpg`,  
+                caption: `Kenangan ${className} #${slotNum}`  
+            };  
+
+            return `  
+                <div class="polaroid-card rounded-xl flex flex-col justify-between">  
+                    <div class="polaroid-tape"></div>  
+                    <div class="relative aspect-[4/3] w-full bg-slate-900 rounded-lg overflow-hidden border border-slate-300" style="position: relative; width: 100%; height: 210px; background: #0f172a; border-radius: 8px; overflow: hidden;">  
+                        <img src="${itemConfig.src}"  
+                             alt="${escapeHtml(baseFileName)}"  
+                             data-try-step="0"  
+                             onerror="handlePolaroidImageError(this, '${escapeHtml(baseFileName)}', '${escapeHtml(className)}', ${slotNum})"  
+                             class="w-full h-full object-cover"  
+                             style="width: 100%; height: 100%; object-fit: cover; display: block;">  
+                        <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-md bg-black/70 text-amber-300 font-racing text-[11px] tracking-wider" style="position: absolute; top: 8px; left: 8px; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,0.75); color: #fcd34d; font-size: 11px;">  
+                            #${slotNum}  
+                        </span>  
+                    </div>  
+                    <div class="pt-3 px-1 text-center" style="padding-top: 12px; text-align: center;">  
+                        <p class="font-hand text-xl sm:text-2xl text-slate-800 py-0.5" style="margin: 0; font-size: 22px; color: #1e293b;">  
+                            ${escapeHtml(itemConfig.caption)}  
+                        </p>  
+                    </div>  
+                </div>  
+            `;  
+        }).join('');  
+    }  
+
+    function initSupabaseClient() {  
+        const isDefaultUrlConfigured = DEFAULT_SUPABASE_URL && !DEFAULT_SUPABASE_URL.includes('ISI_PROJECT_ID_ANDA');  
+        const isDefaultKeyConfigured = DEFAULT_SUPABASE_ANON_KEY && !DEFAULT_SUPABASE_ANON_KEY.includes('ISI_ANON_PUBLIC_KEY');  
+        const savedUrl = isDefaultUrlConfigured ? DEFAULT_SUPABASE_URL : (localStorage.getItem('plp_sb_url') || '');  
+        const savedKey = isDefaultKeyConfigured ? DEFAULT_SUPABASE_ANON_KEY : (localStorage.getItem('plp_sb_key') || '');  
+
+        if (savedUrl && savedKey && window.supabase) {  
+            try {  
+                supabaseClient = window.supabase.createClient(savedUrl.trim(), savedKey.trim());  
+                return;  
+            } catch (err) {}  
+        }  
+        supabaseClient = null;  
+    }  
+
+    function updateClassCounters() {  
+        CLASSES.forEach(cls => {  
+            const count = messagesCache.filter(m => m.kelas === cls).length;  
+            const badge = document.getElementById(`class-count-${cls}`);  
+            if (badge) badge.textContent = `${count} Pesan Masuk`;  
+        });  
+    }  
+
+    async function fetchMessagesFromSupabase(showFeedback = false) {  
+        const spinIcon = document.getElementById('refresh-spin-icon');  
+        if (spinIcon && showFeedback) spinIcon.classList.add('fa-spin');  
+
+        if (supabaseClient) {  
+            try {  
+                const { data, error } = await supabaseClient  
+                    .from('pesan_plp')  
+                    .select('*')  
+                    .order('created_at', { ascending: false });  
+
+                if (error) throw error;  
+                if (Array.isArray(data)) {  
+                    messagesCache = data;  
+                    saveLocalMessages(messagesCache);  
+                    if (showFeedback) showToast('Data Disinkronkan!', `Berhasil memuat ${data.length} kartu pesan dari Supabase.`);  
+                }  
+            } catch (err) {  
+                if (showFeedback) showToast('Mode Cadangan Lokal', 'Pastikan tabel pesan_plp sudah dibuat di SQL Editor.');  
+            }  
+        }  
+
+        if (spinIcon && showFeedback) setTimeout(() => spinIcon.classList.remove('fa-spin'), 500);  
+        updateClassCounters();  
+        renderForMeMessages();  
+    }  
+
+    async function submitMessage(event) {  
+        event.preventDefault();  
+        const namaInput = document.getElementById('input-nama');  
+        const kelasInput = document.getElementById('input-kelas');  
+        const pesanInput = document.getElementById('input-pesan');  
+        const submitBtn = document.getElementById('btn-submit-pesan');  
+
+        const nama = namaInput.value.trim();  
+        const kelas = kelasInput.value;  
+        const pesan = pesanInput.value.trim();  
+
+        if (!nama || !kelas || !pesan) return;  
+
+        submitBtn.disabled = true;  
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Mengirim...</span>';  
+
+        const newEntry = {  
+            id: 'local-' + Date.now(),  
+            nama,  
+            kelas,  
+            pesan,  
+            created_at: new Date().toISOString()  
+        };  
+
+        let savedToSupabase = false;  
+        if (supabaseClient) {  
+            try {  
+                const { data, error } = await supabaseClient  
+                    .from('pesan_plp')  
+                    .insert([{ nama, kelas, pesan }])  
+                    .select()  
+                    .single();  
+
+                if (!error && data) {  
+                    messagesCache.unshift(data);  
+                    savedToSupabase = true;  
+                }  
+            } catch (err) {}  
+        }  
+
+        if (!savedToSupabase) messagesCache.unshift(newEntry);  
+
+        saveLocalMessages(messagesCache);  
+        updateClassCounters();  
+        renderForMeMessages();  
+
+        namaInput.value = '';  
+        pesanInput.value = '';  
+        submitBtn.disabled = false;  
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>Kirim Pesan</span>';  
+
+        playDodgeSound(2);  
+        showToast('Pesan Terkirim!', `Kartu pesan dari ${nama} (${kelas}) berhasil disimpan!`);  
+    }  
+
+    async function deleteMessage(id) {  
+        if (supabaseClient && !String(id).startsWith('local-')) {  
+            try {  
+                await supabaseClient.from('pesan_plp').delete().eq('id', id);  
+            } catch (e) {}  
+        }  
+        messagesCache = messagesCache.filter(m => String(m.id) !== String(id));  
+        saveLocalMessages(messagesCache);  
+        updateClassCounters();  
+        renderForMeMessages();  
+        showToast('Kartu Dihapus', 'Kartu pesan berhasil dihapus.');  
+    }  
+
+    const FOR_ME_PASSWORD = 'AtianGanteng';  
+    function openForMePage() {  
+        const modal = document.getElementById('forme-password-modal');  
+        const input = document.getElementById('forme-password-input');  
+        const errorMsg = document.getElementById('forme-password-error');  
+        const eyeIcon = document.getElementById('forme-password-eye');  
+
+        input.value = '';  
+        input.type = 'password';  
+        eyeIcon.className = 'fa-solid fa-eye';  
+        errorMsg.classList.add('hidden');  
+        modal.classList.remove('hidden');  
+        setTimeout(() => input.focus(), 80);  
+    }  
+
+    function closeForMePasswordModal() {  
+        document.getElementById('forme-password-modal').classList.add('hidden');  
+    }  
+
+    function toggleForMePasswordVisibility() {  
+        const input = document.getElementById('forme-password-input');  
+        const eyeIcon = document.getElementById('forme-password-eye');  
+        if (input.type === 'password') {  
+            input.type = 'text';  
+            eyeIcon.className = 'fa-solid fa-eye-slash';  
+        } else {  
+            input.type = 'password';  
+            eyeIcon.className = 'fa-solid fa-eye';  
+        }  
+    }  
+
+    function verifyForMePassword(event) {  
+        event.preventDefault();  
+        const input = document.getElementById('forme-password-input');  
+        const errorMsg = document.getElementById('forme-password-error');  
+        const card = document.getElementById('forme-password-card');  
+
+        if (input.value === FOR_ME_PASSWORD) {  
+            closeForMePasswordModal();  
+            playDodgeSound(2);  
+            showView('for-me');  
+            renderForMeMessages();  
+            fetchMessagesFromSupabase(false);  
+            showToast('Akses Diterima!', 'Selamat datang di halaman For Me!');  
+        } else {  
+            errorMsg.classList.remove('hidden');  
+            card.classList.remove('animate-shake');  
+            void card.offsetWidth;  
+            card.classList.add('animate-shake');  
+            playDodgeSound(1);  
+            input.select();  
+        }  
+    }  
+
+    function lockAndExitForMe(targetView) {  
+        if (targetView === 'class-detail') openClassDetail(currentClass);  
+        else showView('class-select');  
+        showToast('Halaman Dikunci', 'Halaman For Me telah dikunci kembali.');  
+    }  
+
+    function filterForMeMessages(filterValue) {  
+        currentForMeFilter = filterValue;  
+        renderForMeMessages();  
+    }  
+
+    function formatMessageTime(isoString, kelas) {  
+        if (!isoString) return kelas;  
+        try {  
+            const d = new Date(isoString);  
+            return `${d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}, ${d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;  
+        } catch (e) {  
+            return kelas;  
+        }  
+    }  
+
+    function renderForMeMessages() {  
+        const filtered = currentForMeFilter === 'ALL' ? messagesCache : messagesCache.filter(m => m.kelas === currentForMeFilter);  
+
+        ['ALL', ...CLASSES].forEach(f => {  
+            const btn = document.getElementById(`filter-${f}`);  
+            if (!btn) return;  
+            if (f === currentForMeFilter) {  
+                btn.style.background = 'linear-gradient(90deg, #dc2626, #f59e0b)';  
+                btn.style.color = '#ffffff';  
+            } else {  
+                btn.style.background = '#12151f';  
+                btn.style.color = '#cbd5e1';  
+            }  
+        });  
+
+        document.getElementById('forme-total-label').textContent = `Menampilkan ${filtered.length} Kartu Pesan`;  
+        const grid = document.getElementById('forme-cards-grid');  
+
+        if (filtered.length === 0) {  
+            grid.innerHTML = `<div class="col-span-full glass-panel rounded-3xl p-12 text-center border border-slate-800"><h4 class="font-racing text-xl text-white">Belum Ada Kartu Pesan</h4><p class="text-slate-400 text-sm mt-1">Kirimkan kartu pesan & kesan pertama!</p></div>`;  
+            return;  
+        }  
+
+        grid.innerHTML = filtered.map(item => `  
+            <div class="glass-panel rounded-2xl p-6 border border-slate-700/80 hover:border-amber-500/50 transition flex flex-col justify-between relative group" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">  
+                <div>  
+                    <div class="flex items-center justify-between gap-2 mb-4">  
+                        <span class="px-3 py-1 rounded-full text-xs font-racing tracking-wider border" style="padding: 4px 12px; border-radius: 999px; background: rgba(245,158,11,0.18); color: #fcd34d; font-size: 11px;">  
+                            <i class="fa-solid fa-motorcycle mr-1"></i> ${escapeHtml(item.kelas)}  
+                        </span>  
+                        <button onclick="deleteMessage('${item.id}')" title="Hapus Kartu" class="text-slate-500 hover:text-red-400 text-xs transition cursor-pointer" style="background: transparent; border: none; color: #94a3b8; cursor: pointer;">  
+                            <i class="fa-solid fa-trash-can"></i>  
+                        </button>  
+                    </div>  
+                    <div class="bg-garage-950/60 border border-slate-800/90 rounded-xl p-4 mb-4" style="background: rgba(9,10,15,0.65); border: 1px solid #1e293b; border-radius: 12px; padding: 14px; margin-bottom: 14px;">  
+                        <p class="text-slate-200 text-sm leading-relaxed whitespace-pre-line" style="margin: 0; color: #e2e8f0; font-size: 14px; line-height: 1.5; white-space: pre-line;">${escapeHtml(item.pesan)}</p>  
+                    </div>  
+                </div>  
+                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80" style="display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid #1e293b;">  
+                    <div class="flex items-center gap-2.5">  
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-red-600 to-amber-500 flex items-center justify-center text-white font-racing text-sm uppercase">  
+                            ${escapeHtml((item.nama || 'T').charAt(0))}  
+                        </div>  
+                        <div>  
+                            <h4 class="font-bold text-white text-sm" style="margin: 0; font-size: 14px; color: #fff;">${escapeHtml(item.nama)}</h4>  
+                            <p class="text-[11px] text-slate-400" style="margin: 2px 0 0; font-size: 11px; color: #94a3b8;">${escapeHtml(formatMessageTime(item.created_at, item.kelas))}</p>  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>  
+        `).join('');  
+    }  
+
+    function escapeHtml(str) {  
+        return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');  
+    }  
+
+    let toastTimeout = null;  
+    function showToast(title, message) {  
+        const box = document.getElementById('toast-box');  
+        document.getElementById('toast-title').textContent = title;  
+        document.getElementById('toast-message').textContent = message;  
+        box.classList.remove('hidden');  
+        if (toastTimeout) clearTimeout(toastTimeout);  
+        toastTimeout = setTimeout(() => box.classList.add('hidden'), 3800);  
+    }  
+
+    window.onload = function() {  
+        initSupabaseClient();  
+        fetchMessagesFromSupabase(false);  
+        showView('prank');  
+    };  
+</script>
+
+</body>  
+</html>
